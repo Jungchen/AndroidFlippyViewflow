@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <com.example.longsiyang.androidviewflowdemo.ViewFlow
+        android:id="@+id/view_flow_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.example.longsiyang.androidviewflowdemo.ViewFlow>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="start"
+        android:onClick="start"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="stop"
+        android:onClick="stop"/>
+
+
+</RelativeLayout>
