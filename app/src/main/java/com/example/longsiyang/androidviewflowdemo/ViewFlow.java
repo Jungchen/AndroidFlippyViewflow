@@ -7,7 +7,6 @@ import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
@@ -20,12 +19,16 @@ import android.widget.ViewFlipper;
 public class ViewFlow extends ViewFlipper implements GestureDetector.OnGestureListener {
 
     Context mContext;
+    // 进入和淡出的动画
     Animation mLeftInAnim;
     Animation mLeftOutAnim;
     Animation mRightInAnim;
     Animation mRightOutAnim;
+    // 长宽比
     double mAspectRatio = 2.0;
+    // 周期
     int mFlipPeriod = 3000;
+    // 手势监听管理器
     GestureDetector gestureDetector;
 
     public ViewFlow(Context context) {
@@ -43,6 +46,7 @@ public class ViewFlow extends ViewFlipper implements GestureDetector.OnGestureLi
         gestureDetector = new GestureDetector(mContext , this);
     }
 
+    // 确定进入＼淡出动画
     private void initData() {
         mLeftInAnim = AnimationUtils.loadAnimation(mContext, R.anim.push_left_in);
         mLeftOutAnim = AnimationUtils.loadAnimation(mContext, R.anim.push_left_out);
@@ -51,12 +55,13 @@ public class ViewFlow extends ViewFlipper implements GestureDetector.OnGestureLi
     }
 
     private void initView() {
-        View view1 = LayoutInflater.from(mContext).inflate(R.layout.test_page1, null);
-        View view2 = LayoutInflater.from(mContext).inflate(R.layout.test_page2, null);
-        this.addView(view1);
-        this.addView(view2);
+
     }
 
+    /**
+     * 设置viewflow宽高比
+     * @param aspectratio
+     */
     public void setAspectratio(double aspectratio) {
         this.mAspectRatio = aspectratio;
         if (this.getLayoutParams() instanceof LinearLayout.LayoutParams) {
@@ -68,6 +73,10 @@ public class ViewFlow extends ViewFlipper implements GestureDetector.OnGestureLi
         }
     }
 
+    /**
+     * 设置viewflow自动播放的周期，为0会报错
+     * @param period    >0从右进入从左淡出 <0从左进入从右淡出
+     */
     public void setPeriod(int period) {
         if (period > 0) {
             this.mFlipPeriod = period;
@@ -90,6 +99,9 @@ public class ViewFlow extends ViewFlipper implements GestureDetector.OnGestureLi
         }
     }
 
+    /**
+     * viewflow开始自动播放
+     */
     public void flipStart() {
         if (!this.isFlipping()) {
             // 合法性检测
@@ -120,6 +132,9 @@ public class ViewFlow extends ViewFlipper implements GestureDetector.OnGestureLi
         }
     }
 
+    /**
+     * viewflow停止自动播放
+     */
     public void flipStop() {
         this.stopFlipping();
         this.setAutoStart(false);
@@ -127,6 +142,7 @@ public class ViewFlow extends ViewFlipper implements GestureDetector.OnGestureLi
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // 触摸时停止自动播放
         flipStop();             // 点击事件后，停止自动播放
         gestureDetector.onTouchEvent(event);         // 注册手势事件
         return true;
@@ -163,17 +179,18 @@ public class ViewFlow extends ViewFlipper implements GestureDetector.OnGestureLi
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         Log.d("tag" , "this fling =====" + (e2.getX() - e1.getX() ));
+        // 根据划动量，切换viewflow
         if (e2.getX() - e1.getX() > 120) {            // 从左向右滑动（左进右出）
             this.setInAnimation(mLeftInAnim);
             this.setOutAnimation(mRightOutAnim);
             this.showPrevious();
-            return true;
+
         } else if (e2.getX() - e1.getX() < -120) {        // 从右向左滑动（右进左出）
             this.setInAnimation(mRightInAnim);
             this.setOutAnimation(mLeftOutAnim);
             this.showNext();
-            return true;
         }
+        //this.flipStart();
         return true;
     }
 }
